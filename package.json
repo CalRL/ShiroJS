@@ -4,7 +4,7 @@
   "description": "ShiroJS",
   "main": "index.js",
   "scripts": {
-    "deploy": "node deploy.js && node index.js",
+    "deploy": "node --experimental-modules deploy.js && node index.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +13,9 @@
   "dependencies": {
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
+    "mongoose": "^6.7.2",
+    "parse-ms": "^3.0.0",
+    "pretty-ms": "^7.0.0",
     "reddit-image-fetcher": "^2.0.11"
   },
   "devDependencies": {

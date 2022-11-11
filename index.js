@@ -1,7 +1,12 @@
 const {Client, Events, GatewayIntentBits, Collection, Message, Partials } = require("discord.js");
+const mongoose = require("mongoose");
 require("dotenv").config()
 const fs = require("node:fs");
 const path = require("node:path");
+const mongo = require("./structures/mongo.js");
+
+const profileSchema = require("./schemas/profile-schema.js");
+const econSchema = require("./economy/economy.js");
 
 const client = new Client({
     intents: ["7796"],
@@ -22,14 +27,25 @@ client.once("ready", c => {
     console.log("Ready!");
 });
 
-client.on("messageCreate", message => {
+client.on("messageCreate", async message => {
     if (message.author.bot === client.user.id) { return };
     if (message.author.id  == "242276511028084738" && message.content == "client.destroy") {
         message.channel.send("Destroying client...");
         console.log("Destroying client...")
         process.exit().catch(console.error())
+    mongo();
+    //add message author to database if not already there
+    const result = await profileSchema.findOne({
+        userId: message.author.id
+    })
+    if (!result) {
+        await new profileSchema({
+            userId: message.author.id,
+            coins: 0
+        }).save()
+        console.log("Added new profile to database")
     };
-});
+}});
 
 client.on(Events.InteractionCreate, async interaction =>{
     const command = interaction.client.commands.get(interaction.commandName);
