@@ -7,6 +7,7 @@ const mongo = require("./structures/mongo.js");
 
 const profileSchema = require("./schemas/profile-schema.js");
 const econSchema = require("./economy/economy.js");
+const Inventory = require("./schemas/inventory-schema.js");
 
 const client = new Client({
     intents: ["7796"],
@@ -44,8 +45,17 @@ client.on("messageCreate", async message => {
             coins: 0
         }).save()
         console.log("Added new profile to database")
+        const InventoryCreation = await Inventory.findOne({
+            userId: message.author.id
+        })
+        if (!InventoryCreation) {
+            await new Inventory({
+                userId: message.author.id,
+            }).save()
+        }
     };
 }});
+
 
 client.on(Events.InteractionCreate, async interaction =>{
     const command = interaction.client.commands.get(interaction.commandName);

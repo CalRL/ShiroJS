@@ -8,9 +8,6 @@ const mongo = require("../structures/mongo.js");
 const prettyMs = require("pretty-ms");
 
 module.exports = {
-    
-}
-module.exports = {
     data: new SlashCommandBuilder()
         .setName("work")
         .setDescription("Work to obtain coins"),
