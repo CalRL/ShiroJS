@@ -9,8 +9,10 @@ const profileSchema = require("./schemas/profile-schema.js");
 const econSchema = require("./economy/economy.js");
 const Inventory = require("./schemas/inventory-schema.js");
 
+//const addXp = require("./economy/message.js");
+
 const client = new Client({
-    intents: ["7796"],
+    intents: ["3243773"],
     presence: {
         activities: [{
             name: "with discord.js",
@@ -29,32 +31,25 @@ client.once("ready", c => {
 });
 
 client.on("messageCreate", async message => {
-    if (message.author.bot === client.user.id) { return };
-    if (message.author.id  == "242276511028084738" && message.content == "client.destroy") {
-        message.channel.send("Destroying client...");
-        console.log("Destroying client...")
-        process.exit().catch(console.error())
-    mongo();
-    //add message author to database if not already there
-    const result = await profileSchema.findOne({
-        userId: message.author.id
-    })
-    if (!result) {
-        await new profileSchema({
-            userId: message.author.id,
-            coins: 0
-        }).save()
-        console.log("Added new profile to database")
-        const InventoryCreation = await Inventory.findOne({
-            userId: message.author.id
-        })
-        if (!InventoryCreation) {
-            await new Inventory({
-                userId: message.author.id,
-            }).save()
-        }
-    };
-}});
+    if (message.author.id === client.user.id) {return};
+    async function addXp(userId) {
+
+        const userData = await profileSchema.findOne({ userId: message.author.id }) || new profileSchema({ userId: message.author.id })
+        const xpToAdd = Math.floor(Math.random() * (25 - 15 + 1)) + 15;
+
+            if (userData.cooldowns.message > Date.now()) {
+                return;
+            } else {
+                userData.cooldowns.message = Date.now() + (1000 * 60 * 2)
+                userData.xp += xpToAdd * userData.multipliers.userXpMultiplier;
+                userData.save();
+            }
+        
+        
+    }
+    mongo().then(addXp(message.author.id));
+
+});
 
 
 client.on(Events.InteractionCreate, async interaction =>{

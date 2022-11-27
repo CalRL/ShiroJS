@@ -17,15 +17,25 @@ const profileSchema = new mongoose.Schema({
         required: true,
         default: 0,
     },
+    xp: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
     premium: {type: Boolean, default: false},
     cooldowns: {
         work: { 
+            type: Date,
+            default: Date.now(),
+        },
+        message: {
             type: Date,
             default: Date.now(),
         }
     },
     multipliers: {
         userCoinsMultiplier: { type: Number, default: 1 },
+        userXpMultiplier: { type: Number, default: 1 },
     },
     tokens: {
         type: Number,
